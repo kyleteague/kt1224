@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  <Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd"> -->
+               
+<Configuration status="warn" name="Checkout" packages="">               
+  <Properties>
+    <Property name="LOG_DIR">./logs</Property>
+  </Properties>
+
+  <Appenders>
+    <RollingFile
+      name="rollingFile"
+      fileName="${LOG_DIR}/checkout.log"
+      filePattern="${LOG_DIR}/checkout.%i.log.gz"
+      ignoreExceptions="false">
+      <PatternLayout>
+          <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+          <SizeBasedTriggeringPolicy size="5MB" />
+      </Policies>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${LOG_DIR}" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz" />
+          <IfLastModified age="P30D" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="rollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
