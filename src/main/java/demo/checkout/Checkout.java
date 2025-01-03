@@ -62,7 +62,7 @@ public class Checkout {
 
 	private static void readProperties() {
 		
-		try (InputStream input = new FileInputStream("checkout.properties")) {
+		try (InputStream input = new FileInputStream("../../checkout.properties")) {
 
 			checkoutProperties = new Properties();
 			checkoutProperties.load(input);
