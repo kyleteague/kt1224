@@ -6,19 +6,19 @@ import com.beust.jcommander.Parameter;
 
 public class RentalInputValues {
 	
-	@Parameter(names = "-help, -usage", help = true)
-	private boolean help;
+	@Parameter(names = "--help", help = true)
+	private boolean help = false;
 	
-	@Parameter(names = "-code", description = "Tool Code for the tool being rented.", required = true)
+	@Parameter(names = "--code", description = "Tool Code for the tool being rented.", required = true)
 	private String toolCode;
 	
-	@Parameter(names = "-days", description = "The number of days to rent the tool for.", required = true)
+	@Parameter(names = "--days", description = "The number of days to rent the tool for.", required = true)
 	private Integer numberOfDays;
 	
-	@Parameter(names = "-discount", description = "Percent discount to apply (0 - 100)", required = true)
+	@Parameter(names = "--discount", description = "Percent discount to apply (0 - 100)", required = true)
 	private Integer discountPercent;
 	
-	@Parameter(names = "-date", description = "The checkout date or 'today' to use the current date.",
+	@Parameter(names = "--date", description = "The checkout date or 'today' to use the current date.",
 			   converter = LocalDateConverter.class, required = true)
 	private LocalDate checkoutDate;
 		

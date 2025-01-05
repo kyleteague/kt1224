@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Demo</groupId>
   <artifactId>Checkout</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <description>Point of sale tool rental demo</description>
+  <packaging>jar</packaging>
   
   <dependencies>
 	<dependency>

@@ -1,24 +1,24 @@
 package demo.checkout;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
-
-import demo.checkout.error.ErrorMessages;
+import demo.checkout.file.PropertiesFileReader;
 import demo.checkout.input.CommandLineParser;
 import demo.checkout.input.RentalInputValues;
 import demo.checkout.rentalagreement.RentalAgreement;
 
 public class Checkout {
 	
-	private static Properties checkoutProperties;
-
+	private static PropertiesFileReader propertiesFileReader;
+	
 	//
 	// This is the execution starting point for the Checkout command line application.
 	//
 	public static void main(String[] args) {
 		
 		try {
+				
+			// Read the properties file
+			propertiesFileReader = new PropertiesFileReader("checkout.properties");
+			propertiesFileReader.readProperties();
 			
 			// Initialize logging
 				
@@ -26,9 +26,6 @@ public class Checkout {
 			CommandLineParser cmdLineParser = new CommandLineParser();
 			RentalInputValues inputValues = cmdLineParser.parseCommandLine(args);			
 									
-			// Load configurable parameters
-			readProperties();
-
 			// Generate a Rental Agreement
 			RentalAgreement rentalAgreement = new RentalAgreement();
 			rentalAgreement.generate(inputValues);
@@ -40,39 +37,21 @@ public class Checkout {
 			
 			System.out.println(e.getMessage());
 			System.exit(-1);
-			
 		}
-
 	}
 	
 	public static String getProperty(String name) {
 		
-		String value = checkoutProperties.getProperty(name);
-		
-		if ((value == null) || (value.trim().length() < 1)) {
+		String value = null;
+		try {
+			value = propertiesFileReader.getProperty(name);
 			
-			System.out.printf(ErrorMessages.FILE_MISSING_VALUE, "checkout.properties");
-        	System.out.println(ErrorMessages.FILE_MUST_BE_REPAIRED);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
-		}
+		} catch (Exception e) {
+			
+			System.out.println(e.getMessage());
+			System.exit(-1);
+		}	
 		
 		return value;
-	}
-
-	private static void readProperties() {
-		
-		try (InputStream input = new FileInputStream("../../checkout.properties")) {
-
-			checkoutProperties = new Properties();
-			checkoutProperties.load(input);
-
-        } catch (Exception ex) {
-            
-        	System.out.printf(ErrorMessages.FILE_MOVED_DELETED_CORRUPTED, "checkout.properties");
-        	System.out.println(ErrorMessages.FILE_MUST_BE_REPAIRED);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
-        }	
 	}
 }

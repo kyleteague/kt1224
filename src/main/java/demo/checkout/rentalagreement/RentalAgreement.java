@@ -6,11 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import demo.checkout.Checkout;
+import demo.checkout.file.ToolChargeDataFileReader;
+import demo.checkout.file.ToolDataFileReader;
 import demo.checkout.input.RentalInputValues;
 import demo.checkout.tool.Tool;
 import demo.checkout.tool.ToolChargeInfo;
-import demo.checkout.tool.ToolChargeInfoFabricator;
-import demo.checkout.tool.ToolFabricator;
 import demo.checkout.util.CurrencyUtils;
 import demo.checkout.util.DateUtils;
 
@@ -52,8 +52,8 @@ public class RentalAgreement {
 	
 	private void getAllToolInfo(String toolCode) {
 
-		tool = new ToolFabricator().getToolWithCode(toolCode);		
-		chargeInfo = new ToolChargeInfoFabricator().getChargeInfoForToolType(tool.getType());
+		tool = new ToolDataFileReader().getToolWithCode(toolCode);		
+		chargeInfo = new ToolChargeDataFileReader().getChargeInfoForToolType(tool.getType());
 	}
 	
 	private void copyInputValues(RentalInputValues inputValues) {
@@ -102,7 +102,7 @@ public class RentalAgreement {
 				}
 			}
 						
-			aRentalDay.plusDays(1);
+			aRentalDay = aRentalDay.plusDays(1);
 			
 		} while (!aRentalDay.isAfter(dueDate));		
 	}
@@ -111,14 +111,14 @@ public class RentalAgreement {
 				
 		// Do not display the rental agreement if it is incomplete.
 		if (!isComplete) {
-			System.out.println("The Rental Agreement is incomplete. There is still at least 1 value that has not been determined.");
+			System.out.println("\nThe Rental Agreement is incomplete. There is still at least 1 value that has not been determined.");
 			return;
 		}
 
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(Checkout.getProperty("DateFormat"));
 		NumberFormat chargeFormatter = NumberFormat.getCurrencyInstance(Locale.US);
 				
-		StringBuilder builder = new StringBuilder("RENTAL AGREEMENT");
+		StringBuilder builder = new StringBuilder("\n\nRENTAL AGREEMENT");
 
 		builder.append("\nTool Code: ").append(tool.getCode());
 		builder.append("\nTool Type: ").append(tool.getType());

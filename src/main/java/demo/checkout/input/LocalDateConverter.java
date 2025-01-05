@@ -20,8 +20,16 @@ public class LocalDateConverter implements IStringConverter<LocalDate> {
 			
 		} else {
 			
-	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Checkout.getProperty("DateFormat"));
-	        date = LocalDate.parse(value, formatter);
+			try {
+				
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Checkout.getProperty("DateFormat"));
+		        date = LocalDate.parse(value, formatter);
+		        
+			} catch (Exception e) {
+				
+				System.out.printf("\nThe rental checkout date must be 'today' or in the format: %s\n", Checkout.getProperty("DateFormat"));
+				System.exit(-1);
+			}
 		}
         
 		return date;

@@ -1,17 +1,24 @@
-package demo.checkout.tool;
+package demo.checkout.file;
 
 import java.io.FileReader;
 import java.io.Reader;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import demo.checkout.Checkout;
-import demo.checkout.error.ErrorMessages;
+import demo.checkout.tool.Tool;
 
-public class ToolFabricator {
+public class ToolDataFileReader {
+	
+	private final String invalidToolCodeMsg = "\nThe tool code you entered: %s, is invalid.\nIf you misspelled the tool " +
+	                                          "code, run Checkout again using the correct tool code.\nIf you are certain " +
+	                                          "that the tool code you entered is correct, then it needs to be added to " + 
+	                                          "the %s file.\n" + DataFileErrorMessages.CONTACT_TECH_SUPPORT;
 	
 	public Tool getToolWithCode(String code) {
+		
+		if ((code == null) || (code.trim().isEmpty()))
+			return null;
 		
 		Tool tool = null;
 		
@@ -40,20 +47,12 @@ public class ToolFabricator {
 			
 		} catch (Exception e) {
 			
-        	System.out.printf(ErrorMessages.FILE_MOVED_DELETED_CORRUPTED, dataFilename);
-        	System.out.println(ErrorMessages.FILE_MUST_BE_REPAIRED);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
+			throw new RuntimeException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(dataFilename));
 		}
 		
 		if (tool == null) {
 			
-        	System.out.printf("The tool code you entered: %s is invalid.\n", code);
-        	System.out.println("If you misspelled the tool code, run Checkout again using the correct tool code.");
-        	System.out.printf("If you are certain that the tool code you entered is correct, then it needs to be added to the %s file.\n", dataFilename);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
-			
+			throw new RuntimeException(String.format(invalidToolCodeMsg, code, dataFilename));
 		}
 		
 		return  tool;

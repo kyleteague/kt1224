@@ -1,18 +1,24 @@
-package demo.checkout.tool;
+package demo.checkout.file;
 
 import java.io.FileReader;
 import java.io.Reader;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-
 import demo.checkout.Checkout;
-import demo.checkout.error.ErrorMessages;
+import demo.checkout.tool.ToolChargeInfo;
 
-public class ToolChargeInfoFabricator {
+public class ToolChargeDataFileReader {
 	
 	private String dataFilename;
 	private String toolType;
+	
+	private final String noChargeInfoStr = "\nThere is no charge information in the %s file for the %s tool type.\n" + 
+										   "The %s file is either not up to date, or it has been corrupted.\n" + 
+										   DataFileErrorMessages.CONTACT_TECH_SUPPORT;
+	
+	private final String invalidYesNoValue = "\nThere either is no value for %s in the %s file for %s tool type, or " + 
+			                                 "the value is invalid.\nThis value must be present in the %s file, and " +
+			                                 "it must be either 'Yes' or 'No'.\n" + DataFileErrorMessages.CONTACT_TECH_SUPPORT;
 
 	public ToolChargeInfo getChargeInfoForToolType(String type) {
 		
@@ -49,24 +55,20 @@ public class ToolChargeInfoFabricator {
 			
 		} catch (NumberFormatException nfe) {
 
-        	System.out.printf("The daily charge value for %s is either missing or invalid in the %s file.\n", toolType, dataFilename);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
+			throw new RuntimeException(DataFileErrorMessages.getFileMissingOrInvalidValue(dataFilename, "DailyCharge"));
 
+		} catch (YesNoValueRuntimeException ynve) {
+			
+			throw new RuntimeException(ynve.getMessage());
+			
 		} catch (Exception e) {
 			
-        	System.out.printf(ErrorMessages.FILE_MOVED_DELETED_CORRUPTED, dataFilename);
-        	System.out.println(ErrorMessages.FILE_MUST_BE_REPAIRED);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);
+			throw new RuntimeException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(dataFilename));
 		}
 		
 		if (toolChargeInfo == null) {
 			
-        	System.out.printf("There is no charge information in the %s file for the %s tool type.\n", dataFilename, toolType);
-        	System.out.printf("The %s file is either not up to date, or it has been corrupted.\n", dataFilename);
-        	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-        	System.exit(-1);		
+        	throw new RuntimeException(String.format(noChargeInfoStr, dataFilename, toolType, dataFilename));	
 		}
 		
 		return  toolChargeInfo;
@@ -82,13 +84,8 @@ public class ToolChargeInfoFabricator {
 		else if ("no".equalsIgnoreCase(yesNoStr))
 			return false;
 		
-		// Any string including null, that is not 'yes' or 'no' is invalid
-    	System.out.printf("There either is no value for %s in the %s file for %s tool type, or the value is invalid.\n", dayType, dataFilename, toolType);
-    	System.out.printf("This value must be present in the %s file, and it must be either 'Yes' or 'No'.\n", dataFilename);
-    	System.out.println(ErrorMessages.CONTACT_TECH_SUPPORT);
-    	System.exit(-1);
-		
-		return false;
+		// Any string, including null, that is not 'yes' or 'no' is invalid
+    	throw new YesNoValueRuntimeException(String.format(invalidYesNoValue, dayType, dataFilename, toolType, dataFilename));	
 	}
 
 }
