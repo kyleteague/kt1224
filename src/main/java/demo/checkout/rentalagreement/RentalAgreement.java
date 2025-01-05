@@ -79,6 +79,7 @@ public class RentalAgreement {
 		// Loop thru every rental day (as defined in the functional specification)
 		// to determine if the customer should be charged for that day, or not.
 		do {	
+			
 			boolean isWeekend = DateUtils.isWeekend(aRentalDay);
 
 			if (isWeekend) {	
