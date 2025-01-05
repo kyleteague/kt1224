@@ -6,9 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import demo.checkout.Checkout;
-import demo.checkout.file.ToolChargeDataFileReader;
-import demo.checkout.file.ToolDataFileReader;
 import demo.checkout.input.RentalInputValues;
+import demo.checkout.readfile.ToolChargeDataFileReader;
+import demo.checkout.readfile.ToolDataFileReader;
 import demo.checkout.tool.Tool;
 import demo.checkout.tool.ToolChargeInfo;
 import demo.checkout.util.CurrencyUtils;

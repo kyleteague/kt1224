@@ -1,10 +1,12 @@
-package demo.checkout.file;
+package demo.checkout.readfile;
 
 import java.io.FileReader;
 import java.io.Reader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import demo.checkout.Checkout;
+import demo.checkout.exception.UserCorrectableException;
+import demo.checkout.exception.YesNoValueRuntimeException;
 import demo.checkout.tool.ToolChargeInfo;
 
 public class ToolChargeDataFileReader {
@@ -42,7 +44,7 @@ public class ToolChargeDataFileReader {
 				
 			    String recordType = aRecord.get("ToolType");
 			    
-			    if (recordType.equalsIgnoreCase(toolType)) {
+			    if (toolType.equalsIgnoreCase(recordType)) {
 			    	
 			    	toolChargeInfo = new ToolChargeInfo();
 			    	toolChargeInfo.setToolType(recordType);
@@ -55,20 +57,20 @@ public class ToolChargeDataFileReader {
 			
 		} catch (NumberFormatException nfe) {
 
-			throw new RuntimeException(DataFileErrorMessages.getFileMissingOrInvalidValue(dataFilename, "DailyCharge"));
+			throw new UserCorrectableException(DataFileErrorMessages.getFileMissingOrInvalidValue(dataFilename, "DailyCharge"));
 
 		} catch (YesNoValueRuntimeException ynve) {
 			
-			throw new RuntimeException(ynve.getMessage());
+			throw ynve;
 			
 		} catch (Exception e) {
 			
-			throw new RuntimeException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(dataFilename));
+			throw new UserCorrectableException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(dataFilename));
 		}
 		
 		if (toolChargeInfo == null) {
 			
-        	throw new RuntimeException(String.format(noChargeInfoStr, dataFilename, toolType, dataFilename));	
+        	throw new UserCorrectableException(String.format(noChargeInfoStr, dataFilename, toolType, dataFilename));	
 		}
 		
 		return  toolChargeInfo;

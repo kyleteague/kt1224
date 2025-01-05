@@ -1,6 +1,6 @@
-package demo.checkout.file;
+package demo.checkout.exception;
 
-public class YesNoValueRuntimeException extends RuntimeException {
+public class YesNoValueRuntimeException extends UserCorrectableException {
 
 	private static final long serialVersionUID = 1L;
 

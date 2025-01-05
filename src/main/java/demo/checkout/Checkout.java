@@ -1,13 +1,20 @@
 package demo.checkout;
 
-import demo.checkout.file.PropertiesFileReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import demo.checkout.exception.UserCorrectableException;
 import demo.checkout.input.CommandLineParser;
 import demo.checkout.input.RentalInputValues;
+import demo.checkout.readfile.PropertiesFileReader;
 import demo.checkout.rentalagreement.RentalAgreement;
 
 public class Checkout {
 	
 	private static PropertiesFileReader propertiesFileReader;
+	
+	// Initialize application logging
+	private static Logger logger = LogManager.getLogger(Checkout.class);
 	
 	//
 	// This is the execution starting point for the Checkout command line application.
@@ -19,9 +26,7 @@ public class Checkout {
 			// Read the properties file
 			propertiesFileReader = new PropertiesFileReader("checkout.properties");
 			propertiesFileReader.readProperties();
-			
-			// Initialize logging
-				
+							
 			// Extract the input values from the command line
 			CommandLineParser cmdLineParser = new CommandLineParser();
 			RentalInputValues inputValues = cmdLineParser.parseCommandLine(args);			
@@ -33,25 +38,35 @@ public class Checkout {
 			// Print the Rental Agreement
 			rentalAgreement.printToConsole();
 			
+		} catch (UserCorrectableException uce) {
+			
+			// Something went wrong that the user can fix.
+			// Print an instructive message saying what is wrong 
+			// and, in general terms, what they need to do to fix it.
+			
+			System.out.println(uce.getMessage());
+			System.exit(-1);
+			
 		} catch (Exception e) {
 			
-			System.out.println(e.getMessage());
+			// Something went wrong that that probably requires knowledge and
+			// understanding of this code to diagnose and fix.
+			// Preserve a stack trace in the log file.
+			
+			System.out.println("\nA fatal error has occurred that will require technical support to diagnose and correct.");
+			System.out.println("Details of this error have been recorded in the application log file.");
+			System.out.println("Please contact your technical support team for help.");
+			
+			logger.fatal(e.getMessage(), e);
 			System.exit(-1);
 		}
 	}
 	
 	public static String getProperty(String name) {
 		
-		String value = null;
-		try {
-			value = propertiesFileReader.getProperty(name);
-			
-		} catch (Exception e) {
-			
-			System.out.println(e.getMessage());
-			System.exit(-1);
-		}	
-		
+		String value = propertiesFileReader.getProperty(name);
+					
 		return value;
 	}
+
 }

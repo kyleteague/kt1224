@@ -1,4 +1,4 @@
-package demo.checkout.file;
+package demo.checkout.readfile;
 
 public class DataFileErrorMessages {
 	

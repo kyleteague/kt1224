@@ -1,8 +1,10 @@
-package demo.checkout.file;
+package demo.checkout.readfile;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+
+import demo.checkout.exception.UserCorrectableException;
 
 public class PropertiesFileReader {
 	
@@ -23,7 +25,7 @@ public class PropertiesFileReader {
 			properties.load(input);		
 			
         } catch (Exception ex) {     
-        	throw new RuntimeException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(propertiesFileName));
+        	throw new UserCorrectableException(DataFileErrorMessages.getFileMovedDeletedCorruptedMessage(propertiesFileName));
         }	
 		
 		return properties;
@@ -34,7 +36,7 @@ public class PropertiesFileReader {
 		String value = properties.getProperty(name);
 		
 		if ((value == null) || (value.trim().length() < 1)) {			
-        	throw new RuntimeException(DataFileErrorMessages.getFileMissingOrInvalidValue(propertiesFileName, name));
+        	throw new UserCorrectableException(DataFileErrorMessages.getFileMissingOrInvalidValue(propertiesFileName, name));
 		}
 		
 		return value;
