@@ -37,11 +37,11 @@ public class RentalAgreement {
 		
 	public void generate(RentalInputValues inputValues) {
 
-		copyInputValues(inputValues);
+		processInputValues(inputValues);
 		
 		getAllToolInfo(inputValues.getToolCode());
 		
-		computeNumberOfChargeDays(inputValues.getNumberOfDays());
+		numberOfChargedDays = computeNumberOfChargeDays(checkoutDate, dueDate, chargeInfo);
 		
 		computeAllCharges();
 		
@@ -56,11 +56,12 @@ public class RentalAgreement {
 		chargeInfo = new ToolChargeDataFileReader(Checkout.getProperty("ChargeInfoDataFile")).getChargeInfoForToolType(tool.getType());
 	}
 	
-	private void copyInputValues(RentalInputValues inputValues) {
+	private void processInputValues(RentalInputValues inputValues) {
 
 		discountPercent = inputValues.getDiscountPercent();
 		totalNumberOfDays = inputValues.getNumberOfDays();
 		checkoutDate = inputValues.getCheckoutDate();
+		dueDate = checkoutDate.plusDays(totalNumberOfDays);
 	}
 	
 	private void computeAllCharges() {
@@ -70,11 +71,10 @@ public class RentalAgreement {
 		finalCharge = preDiscountCharge - discountAmount;
 	}
 	
-	private void computeNumberOfChargeDays(Integer numberOfDays) {
+	int computeNumberOfChargeDays(LocalDate rentalStartDate, LocalDate rentalEndDate, ToolChargeInfo toolChargeInfo) {		
 		
-		dueDate = checkoutDate.plusDays(numberOfDays);
-		numberOfChargedDays = 0;
-		LocalDate aRentalDay = checkoutDate.plusDays(1);
+		int numDaysCharged = 0;
+		LocalDate aRentalDay = rentalStartDate.plusDays(1);
 
 		// Loop thru every rental day (as defined in the functional specification)
 		// to determine if the customer should be charged for that day, or not.
@@ -83,8 +83,8 @@ public class RentalAgreement {
 			boolean isWeekend = DateUtils.isWeekend(aRentalDay);
 
 			if (isWeekend) {	
-				if (chargeInfo.getWeekendCharge())
-					numberOfChargedDays++;
+				if (toolChargeInfo.getWeekendCharge())
+					numDaysCharged++;
 				
 			} else {
 				// This is a weekday
@@ -92,20 +92,22 @@ public class RentalAgreement {
 				if (DateUtils.dateIsAHoliday(aRentalDay)) {
 					
 					// This weekday is also a holiday				
-					if (chargeInfo.getHolidayCharge())
-						numberOfChargedDays++;
+					if (toolChargeInfo.getHolidayCharge())
+						numDaysCharged++;
 				
 				} else {
 					
 					// This weekday is not a holiday
-					if (chargeInfo.getWeekdayCharge()) 
-						numberOfChargedDays++;
+					if (toolChargeInfo.getWeekdayCharge()) 
+						numDaysCharged++;
 				}
 			}
 						
 			aRentalDay = aRentalDay.plusDays(1);
 			
-		} while (!aRentalDay.isAfter(dueDate));		
+		} while (!aRentalDay.isAfter(rentalEndDate));	
+		
+		return numDaysCharged;
 	}
 	
 	public void printToConsole() {
