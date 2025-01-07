@@ -22,18 +22,19 @@ public class DateUtils {
 		int dayOfMonth = aDate.getDayOfMonth();
 
 		// Check if this date is July 4th, or the nearest weekday, if the 4th falls on a weekend.
-		if ((aDate.getMonth() == Month.JULY) && 
-			((dayOfMonth > 2) && (dayOfMonth < 6))) {
+		if ((aDate.getMonth() == Month.JULY) && (dayOfMonth > 2) && (dayOfMonth < 6)) {
 				
 			LocalDate julyFourth = LocalDate.of(aDate.getYear(), 7, 4);
 			
-			if ((julyFourth.getDayOfWeek() == DayOfWeek.SATURDAY) && (dayOfMonth == 3)) {
+			if (julyFourth.getDayOfWeek() == DayOfWeek.SATURDAY) {
 				
-				isHoliday = true;
+				if (dayOfMonth == 3)
+					isHoliday = true;
 				
-			} else if ((julyFourth.getDayOfWeek() == DayOfWeek.SUNDAY) && (dayOfMonth == 5)) {
+			} else if (julyFourth.getDayOfWeek() == DayOfWeek.SUNDAY) {
 				
-				isHoliday = true;
+				if (dayOfMonth == 5)
+					isHoliday = true;
 				
 			} else if (dayOfMonth == 4) {
 				

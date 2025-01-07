@@ -1,0 +1,16 @@
+## comments should be ignored
+# blank lines and whitespace should also be ignored
+
+ToolCode,ToolType,Brand
+
+# comment
+
+LADW,       Ladder,        Werner
+JAKD,	Jackhammer,	DeWalt
+
+                JAKR,Jackhammer,Ridgid
+
+
+
+
+CHNS,Chainsaw,Stihl

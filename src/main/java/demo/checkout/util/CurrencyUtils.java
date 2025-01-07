@@ -2,9 +2,9 @@ package demo.checkout.util;
 
 public class CurrencyUtils {
 	
-	public static float roundHalfUpToCents(float valueToRound) {
+	public static double roundHalfUpToCents(double valueToRound) {
 		
-		float roundedNumber = Math.round(valueToRound * 100.0f) / 100.0f;
+		double roundedNumber = Math.round(valueToRound * 100.0d) / 100.0d;
 		return roundedNumber;
 	}
 

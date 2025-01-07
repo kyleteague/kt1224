@@ -3,7 +3,7 @@ package demo.checkout.tool;
 public class ToolChargeInfo {
 
 	private String toolType;
-	private Float dailyCharge;
+	private Double dailyCharge;
 	private Boolean weekdayCharge;
 	private Boolean weekendCharge;
 	private Boolean holidayCharge;
@@ -16,11 +16,11 @@ public class ToolChargeInfo {
 		this.toolType = toolType;
 	}
 	
-	public Float getDailyCharge() {
+	public Double getDailyCharge() {
 		return dailyCharge;
 	}
 	
-	public void setDailyCharge(Float dailyCharge) {
+	public void setDailyCharge(Double dailyCharge) {
 		this.dailyCharge = dailyCharge;
 	}
 	

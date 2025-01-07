@@ -23,10 +23,10 @@ public class RentalAgreement {
 	private LocalDate checkoutDate;
 	private LocalDate dueDate;
 	private Integer numberOfChargedDays;
-	private Float preDiscountCharge;
+	private Double preDiscountCharge;
 	private Integer discountPercent;
-	private Float discountAmount;
-	private Float finalCharge;
+	private Double discountAmount;
+	private Double finalCharge;
 	
 	private boolean isComplete;
 	
@@ -52,8 +52,8 @@ public class RentalAgreement {
 	
 	private void getAllToolInfo(String toolCode) {
 
-		tool = new ToolDataFileReader().getToolWithCode(toolCode);		
-		chargeInfo = new ToolChargeDataFileReader().getChargeInfoForToolType(tool.getType());
+		tool = new ToolDataFileReader(Checkout.getProperty("ToolsDataFile")).getToolWithCode(toolCode);		
+		chargeInfo = new ToolChargeDataFileReader(Checkout.getProperty("ChargeInfoDataFile")).getChargeInfoForToolType(tool.getType());
 	}
 	
 	private void copyInputValues(RentalInputValues inputValues) {

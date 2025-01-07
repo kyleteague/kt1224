@@ -5,8 +5,6 @@ import java.io.Reader;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-
-import demo.checkout.Checkout;
 import demo.checkout.exception.UserCorrectableException;
 import demo.checkout.tool.Tool;
 
@@ -22,6 +20,11 @@ public class ToolDataFileReader {
 			 DataFileErrorMessages.CONTACT_TECH_SUPPORT;
 	
 	private String dataFilename;
+	
+	public ToolDataFileReader(String filename) {
+		super();
+		dataFilename = filename;
+	}
 		
 	public Tool getToolWithCode(String code) {
 		
@@ -29,15 +32,15 @@ public class ToolDataFileReader {
 			return null;
 		
 		Tool tool = null;
-		
-		dataFilename = Checkout.getProperty("ToolsDataFile");
-		
+				
 		try {
 			
 			Reader in = new FileReader(dataFilename);
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.builder()
 			  .setHeader()
 			  .setSkipHeaderRecord(true)
+			  .setCommentMarker('#')
+			  .setIgnoreSurroundingSpaces(true)
 			  .build()
 			  .parse(in);
 			
@@ -72,7 +75,7 @@ public class ToolDataFileReader {
 		return  tool;
 	}
 	
-	public String checkValue(String value, String name, String code) {
+	private String checkValue(String value, String name, String code) {
 		
 		if ((value == null) || (value.trim().length() < 1)) {
 

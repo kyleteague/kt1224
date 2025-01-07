@@ -12,7 +12,7 @@ public class LocalDateConverter implements IStringConverter<LocalDate> {
 
 	@Override
 	public LocalDate convert(String value) {
-		
+				
 		LocalDate date = null; 
 		
 		if (value.equalsIgnoreCase("today")) {

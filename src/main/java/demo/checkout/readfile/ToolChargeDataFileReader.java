@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.Reader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import demo.checkout.Checkout;
 import demo.checkout.exception.UserCorrectableException;
 import demo.checkout.exception.YesNoValueRuntimeException;
 import demo.checkout.tool.ToolChargeInfo;
@@ -21,6 +20,11 @@ public class ToolChargeDataFileReader {
 	private final String invalidYesNoValue = "\nThere either is no value for %s in the %s file for %s tool type, or " + 
 			                                 "the value is invalid.\nThis value must be present in the %s file, and " +
 			                                 "it must be either 'Yes' or 'No'.\n" + DataFileErrorMessages.CONTACT_TECH_SUPPORT;
+	
+	public ToolChargeDataFileReader(String filename) {
+		super();
+		dataFilename = filename;
+	}
 
 	public ToolChargeInfo getChargeInfoForToolType(String type) {
 		
@@ -28,7 +32,6 @@ public class ToolChargeDataFileReader {
 			return null;
 		
 		ToolChargeInfo toolChargeInfo = null;
-		dataFilename = Checkout.getProperty("ChargeInfoDataFile");
 		toolType = type;
 		
 		try {
@@ -37,6 +40,8 @@ public class ToolChargeDataFileReader {
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.builder()
 			  .setHeader()
 			  .setSkipHeaderRecord(true)
+			  .setCommentMarker('#')
+			  .setIgnoreSurroundingSpaces(true)
 			  .build()
 			  .parse(in);
 			
@@ -48,7 +53,7 @@ public class ToolChargeDataFileReader {
 			    	
 			    	toolChargeInfo = new ToolChargeInfo();
 			    	toolChargeInfo.setToolType(recordType);
-			    	toolChargeInfo.setDailyCharge(Float.parseFloat(aRecord.get("DailyCharge")));
+			    	toolChargeInfo.setDailyCharge(Double.parseDouble(aRecord.get("DailyCharge")));
 			    	toolChargeInfo.setWeekdayCharge(getChargeValueForTypeOfDay("WeekdayCharge", aRecord));
 			    	toolChargeInfo.setWeekendCharge(getChargeValueForTypeOfDay("WeekendCharge", aRecord));
 			    	toolChargeInfo.setHolidayCharge(getChargeValueForTypeOfDay("HolidayCharge", aRecord));

@@ -64,9 +64,7 @@ public class Checkout {
 	
 	public static String getProperty(String name) {
 		
-		String value = propertiesFileReader.getProperty(name);
-					
-		return value;
+		return propertiesFileReader.getProperty(name);
 	}
 
 }
